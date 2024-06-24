@@ -1,22 +1,24 @@
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
-import GeneratePasswordScreen from './screens/GeneratePasswordScreen';
-import PasswordListScreen from './screens/PasswordListScreen';
+import { StyleSheet, View } from 'react-native';
+import { Insert } from './banco/Insert';
+import { Remove } from './banco/Remove';
+import { AllContacts } from './banco/AllContacts';
 
-const Stack = createStackNavigator();
+export default function App() {
 
-function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="GeneratePassword" component={GeneratePasswordScreen} />
-        <Stack.Screen name="PasswordList" component={PasswordListScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={styles.container}>
+      <Insert/>
+      <Remove/>
+      <AllContacts/>
+    </View>
   );
 }
 
-export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+});
