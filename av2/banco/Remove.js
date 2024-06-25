@@ -1,51 +1,48 @@
-import * as SQLite from 'expo-sqlite';
-import { create } from './Create.js';
-import { Alert, View, TextInput, Button, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Alert, Button, TextInput, View, StyleSheet } from 'react-native';
+import { create } from './Create';
 
 export function Remove() {
-    const [name, setName] = useState('');
+  const [id, setId] = useState('');
 
-    const remove = async () => {
-
-        try {
-            db = await create();
-            let result = await db.runAsync(`DELETE FROM contacts where NAME = ?;`, name);
-            if (result.changes > 0) {
-                Alert.alert(
-                    'Success',
-                    'Contact removed',
-                    [
-                        {
-                            text: 'Ok'
-                        },
-                    ],
-                    { cancelable: false }
-                );
-            } else alert('Error on removing contact');
-        } catch (error) {
-            console.log(error);
-        }
+  const remove = async () => {
+    try {
+      let db = await create();
+      db.transaction(tx => {
+        tx.executeSql('DELETE FROM passwords WHERE id = ?;', [id], (tx, result) => {
+          if (result.rowsAffected > 0) {
+            Alert.alert(
+              'Success',
+              'Password removed',
+              [{ text: 'Ok' }],
+              { cancelable: false }
+            );
+          } else {
+            alert('Error removing password');
+          }
+        });
+      });
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    return (
-        <View style={{ flex: 1, width: "80%" }}>
-            <TextInput
-                placeholder="Entre com o Nome"
-                onChangeText={
-                    nome => setName(nome)
-                }
-                style={{ padding: 2 }}
-            />
-            <Button title="Delete" onPress={() => remove()} />
-        </View>
-    );
+  return (
+    <View style={{ flex: 1, width: "80%" }}>
+      <TextInput
+        placeholder="Enter Password ID"
+        onChangeText={id => setId(id)}
+        style={{ padding: 2 }}
+      />
+      <Button title="Delete" onPress={() => remove()} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-    },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1
+  }
 });

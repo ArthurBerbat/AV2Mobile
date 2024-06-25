@@ -1,15 +1,14 @@
 import { StyleSheet, View } from 'react-native';
 import { Insert } from './banco/Insert';
 import { Remove } from './banco/Remove';
-import { AllContacts } from './banco/AllContacts';
+import { AllPasswords } from './banco/AllPasswords';
 
 export default function App() {
-
   return (
     <View style={styles.container}>
-      <Insert/>
-      <Remove/>
-      <AllContacts/>
+      <Insert />
+      <Remove />
+      <AllPasswords />
     </View>
   );
 }
