@@ -3,30 +3,40 @@ import { Alert, Button, FlatList, Text, View, StyleSheet } from 'react-native';
 import { create } from './Create';
 
 export function AllPasswords() {
-  let [flatListItems, setFlatListItems] = useState([]);
+  const [flatListItems, setFlatListItems] = useState([]);
 
   const getAll = async () => {
     try {
       let db = await create();
-      let allRows = await db.transaction(tx => tx.executeSql('SELECT * FROM passwords'));
-      setFlatListItems(allRows.rows._array);
-      console.log("[LOG] Data retrieved from table passwords");
-      if (allRows.rows.length == 0) {
-        Alert.alert(
-          'Warning',
-          'No password saved',
-          [
-            { text: 'Ok' }
-          ],
-          { cancelable: false }
+      db.transaction(tx => {
+        tx.executeSql(
+          'SELECT * FROM passwords',
+          [],
+          (tx, results) => {
+            setFlatListItems(results.rows._array);
+            console.log("[LOG] Data retrieved from table passwords:", results.rows._array);
+            if (results.rows.length == 0) {
+              Alert.alert(
+                'Warning',
+                'No password saved',
+                [{ text: 'Ok' }],
+                { cancelable: false }
+              );
+            }
+          },
+          (_, error) => {
+            console.log("[LOG] Error retrieving data", error);
+            alert('Error retrieving data: ' + error.message);
+          }
         );
-      }
+      });
     } catch (error) {
-      console.log(error);
+      console.log("[LOG] Error during select operation", error);
+      alert('Error during select operation: ' + error.message);
     }
   };
 
-  let listItemView = (item) => {
+  const listItemView = (item) => {
     return (
       <View key={item.id} style={{ backgroundColor: '#EEE', marginTop: 20, padding: 30, borderRadius: 10 }}>
         <Text style={styles.textheader}>ID</Text>

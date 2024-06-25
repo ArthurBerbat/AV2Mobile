@@ -18,21 +18,32 @@ export function Insert() {
     try {
       let db = await create();
       db.transaction(tx => {
-        tx.executeSql('INSERT INTO passwords (password) VALUES (?);', [password], (tx, result) => {
-          if (result.rowsAffected > 0) {
-            Alert.alert(
-              'Success',
-              'Password saved',
-              [{ text: 'Ok' }],
-              { cancelable: false }
-            );
-          } else {
-            alert('Error saving password');
+        tx.executeSql(
+          'INSERT INTO passwords (password) VALUES (?);',
+          [password],
+          (tx, result) => {
+            if (result.rowsAffected > 0) {
+              Alert.alert(
+                'Success',
+                'Password saved',
+                [{ text: 'Ok' }],
+                { cancelable: false }
+              );
+              console.log("[LOG] Password saved successfully");
+            } else {
+              alert('Error saving password');
+              console.log("[LOG] Error: No rows affected");
+            }
+          },
+          (_, error) => {
+            alert('Error saving password: ' + error.message);
+            console.log("[LOG] Error saving password", error);
           }
-        });
+        );
       });
     } catch (error) {
-      console.log(error);
+      console.log("[LOG] Error during insert operation", error);
+      alert('Error during insert operation: ' + error.message);
     }
   };
 
